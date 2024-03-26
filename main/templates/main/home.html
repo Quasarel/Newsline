@@ -1,0 +1,31 @@
+{% extends 'main/layout.html' %}
+
+{% block title %}Подписки RSS{%endblock%}
+
+{% block content %}
+<div class="features">
+    <h1>Подписки RSS</h1>
+        {% if feed_entries %}
+            {% for el in feed_entries %}
+            <div class="MagazineLayout">
+                <div class="EntryVisual">
+                    {% if el.img %}
+                    {% autoescape off %}
+                    <p>{{el.img}}</p>
+                    {% endautoescape %}
+                {% endif %}&nbsp;
+                </div>
+                <div class="Entry">
+                <h3><a href="{{el.id}}" target="_blank">{{el.title}}</a></h3>
+                <p><img width="16" src="{{el.icon}}"> {{el.domain}}</p>
+                <p>{{el.published}}</p>
+
+                <p>{{ el.description }}</p>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+                <p>У вас нет записей!</p>
+        {% endif %}
+</div>
+{%endblock%}

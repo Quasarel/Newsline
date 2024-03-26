@@ -1,0 +1,80 @@
+body {
+font-family: sans-serif;
+color: #333333;
+}
+a {
+color: #333333;
+}
+/* a:hover {
+color: #333333;
+}
+/* Стиль боковой панели - фиксированная полная высота */
+.sidebar {
+  height: 100%;
+  width: 63px;
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  border-right: #F2F2F2 1px solid;
+  overflow-x: hidden;
+  padding-top: 16px;
+}
+
+/* Боковая панель стиль ссылки */
+.sidebar a {
+  padding: 6px 8px 6px 16px;
+  text-decoration: none;
+  font-size: 20px;
+  color: #818181;
+  display: block;
+}
+
+/* Стиль ссылок при наведении курсора мыши
+.sidebar a:hover {
+  color: #f1f1f1;
+}*/
+
+/* Стиль основного содержания */
+.main {
+  margin-left: 160px; /* Same as the width of the sidenav */
+  padding: 0px 10px;
+}
+
+/* Добавить медиа запросы для небольших экранов (когда высота экрана меньше 450px, добавьте меньшие отступы и размер шрифта) */
+@media screen and (max-height: 450px) {
+  .sidebar {padding-top: 15px;}
+  .sidebar a {font-size: 18px;}
+}
+.MagazineLayout {
+    float: left;
+    clear: both;
+    width: 700px;
+    margin: 20px 20%;
+    text-align: left;
+}
+.EntryVisual {
+    float: left;
+    clear: both;
+    width: 230px;
+    margin: 0px;
+}
+.Entry {
+    float: left;
+    margin: 0px 0px 0px 20px;
+    width: 450px;
+}
+/*a.rss div:hover{
+    color: #ddd;#ffda6a;
+    /*mix-blend-mode: hard-light;
+}*/
+
+h3 {
+font-size: 16px;
+font-weight: 700;
+}
+
+p {
+font-size: 13px;
+margin-bottom: 6px;
+}
