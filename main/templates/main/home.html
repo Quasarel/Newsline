@@ -1,10 +1,10 @@
 {% extends 'main/layout.html' %}
 
-{% block title %}Подписки RSS{%endblock%}
+{% block title %}Лента новостей{%endblock%}
 
 {% block content %}
 <div class="features">
-    <h1>Подписки RSS</h1>
+    <h1 style="text-align: center">Лента новостей</h1>
         {% if feed_entries %}
             {% for el in feed_entries %}
             <div class="MagazineLayout">
@@ -13,7 +13,7 @@
                     {% autoescape off %}
                     <p>{{el.img}}</p>
                     {% endautoescape %}
-                {% endif %}&nbsp;
+                    {% endif %}&nbsp;
                 </div>
                 <div class="Entry">
                 <h3><a href="{{el.id}}" target="_blank">{{el.title}}</a></h3>

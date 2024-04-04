@@ -1,0 +1,15 @@
+{% extends 'main/layout.html' %}
+
+{% block title %}Добавление ленты{%endblock%}
+
+{% block content %}
+<div class="features">
+    <h1>Добавление ленты</h1>
+    <form method="post">
+        {% csrf_token %}<br>
+        {{ form.rss_url }}<br>
+        {{ form.non_field_errors }}<br>
+        <button class="btn btn-success" type="submit">Добавить RSS</button>
+    </form>
+</div>
+{%endblock%}

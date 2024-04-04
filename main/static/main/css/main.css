@@ -1,14 +1,12 @@
 body {
-font-family: sans-serif;
-color: #333333;
+  font-family: roboto;/* sans-serif;*/
+  color: #333333;
 }
+
 a {
-color: #333333;
+  color: #333333;
 }
-/* a:hover {
-color: #333333;
-}
-/* Стиль боковой панели - фиксированная полная высота */
+
 .sidebar {
   height: 100%;
   width: 63px;
@@ -21,27 +19,32 @@ color: #333333;
   padding-top: 16px;
 }
 
-/* Боковая панель стиль ссылки */
 .sidebar a {
-  padding: 6px 8px 6px 16px;
+  padding: 6px 16px 0px 16px;
   text-decoration: none;
-  font-size: 20px;
+  font-size: 30px;
   color: #818181;
   display: block;
 }
 
-/* Стиль ссылок при наведении курсора мыши
-.sidebar a:hover {
-  color: #f1f1f1;
-}*/
-
-/* Стиль основного содержания */
-.main {
-  margin-left: 160px; /* Same as the width of the sidenav */
-  padding: 0px 10px;
+.sidebar a:hover{
+  padding: 6px 16px 0px 16px;
+  text-decoration: none;
+  font-size: 30px;
+  color: #74C0FC;
+  background-color: #E8E8E8;
+  display: block;
 }
 
-/* Добавить медиа запросы для небольших экранов (когда высота экрана меньше 450px, добавьте меньшие отступы и размер шрифта) */
+.sidebar a.active{
+  padding: 6px 16px 0px 16px;
+  text-decoration: none;
+  font-size: 30px;
+  color: #FFFFFF;
+  background-color: #74C0FC;
+  display: block;
+}
+
 @media screen and (max-height: 450px) {
   .sidebar {padding-top: 15px;}
   .sidebar a {font-size: 18px;}
@@ -64,17 +67,13 @@ color: #333333;
     margin: 0px 0px 0px 20px;
     width: 450px;
 }
-/*a.rss div:hover{
-    color: #ddd;#ffda6a;
-    /*mix-blend-mode: hard-light;
-}*/
 
 h3 {
-font-size: 16px;
-font-weight: 700;
+  font-size: 16px;
+  font-weight: 700;
 }
 
 p {
-font-size: 13px;
-margin-bottom: 6px;
+  font-size: 13px;
+  margin-bottom: 6px;
 }

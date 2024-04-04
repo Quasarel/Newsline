@@ -1,7 +1,10 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect, get_object_or_404
 import feedparser
 import re
 from bs4 import BeautifulSoup
+from .models import Channels
+from .forms import RSSForm
+from django.views.generic.edit import CreateView
 
 
 def sort_by_date(objects):
@@ -9,24 +12,61 @@ def sort_by_date(objects):
     return sorted_objects
 
 
+def settings(request):
+    rss = Channels.objects.order_by('-id')
+    rss_entries = []
+    for entry in rss:
+        feed = feedparser.parse(entry.rss_url)
+        domain = re.findall('//(.*?)/', entry.rss_url)[0]
+        el = {'icon': 'https://icons.feedercdn.com/' + domain,
+              'id': entry.id,
+              'site': domain,
+              'title': feed.feed.title,
+              'rss_url': entry.rss_url,
+              'description': feed.feed.subtitle}
+        rss_entries.append(el)
+    return render(request, 'main/rss_list.html', {"rss": rss_entries})
+
+
+class RSSFormView(CreateView):
+    model = Channels
+    template_name = "main/create.html"
+    form_class = RSSForm
+    success_url = "/settings"
+
+
+def delete(request, pk):
+    data = get_object_or_404(Channels, pk=pk)
+    data.delete()
+    return redirect('settings')
+
+
 def index(request):
-    rss_url = "https://techrocks.ru/feed/"
+    rss = Channels.objects.order_by('-id')
     feed_entries = []
-    for i in range(2):
+    for rss_entry in rss:
+        rss_url = rss_entry.rss_url
         feed = feedparser.parse(rss_url)
-        domain = re.findall('\/\/(.*?)\/', rss_url)[0]
-
+        domain = re.findall('//(.*?)/', rss_url)[0]
         for entry in feed.entries:
-            img = ""
-            match = re.search(r'(<img ([^>]+)>)', entry.summary)
-            if match:
-                img = re.sub(r'<img ([^>]+)>', r'<img width="230" style="margin:auto; display:block" \1>', match[0])
-                print(entry.published_parsed)
-
-            summary = BeautifulSoup(entry.summary).get_text().replace("Читать далее", "").replace("Читать дальше", "")[0:250]+"..."
-            el = {'icon': 'https://icons.feedercdn.com/' + domain, 'id': entry.id, 'domain': domain, 'title': entry.title, 'img': img, 'description': summary, 'published_parsed': entry.published_parsed, 'published': entry.published}
-            feed_entries.append(el)
-        rss_url = "https://habr.com/ru/rss/company/postgrespro/blog/?fl=ru"
+            img = BeautifulSoup(entry.summary, 'html.parser').img
+            if img:
+                img['style'] = "margin:auto; display:block"
+                img['width'] = "230"
+            else:
+                img = ""
+            summary = BeautifulSoup(entry.summary, 'html.parser').get_text().replace("Читать далее", "").replace(
+                "Читать дальше", "")[0:250] + "..."
+            el = {'icon': 'https://icons.feedercdn.com/' + domain,
+                  'id': entry.id,
+                  'domain': domain,
+                  'title': entry.title,
+                  'img': str(img),
+                  'description': summary,
+                  'published_parsed': entry.published_parsed,
+                  'published': entry.published}
+            if el not in feed_entries:
+                feed_entries.append(el)
 
     feed_entries = sort_by_date(feed_entries)
     data = {"feed_entries": feed_entries}
