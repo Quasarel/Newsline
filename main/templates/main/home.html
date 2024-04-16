@@ -4,7 +4,11 @@
 
 {% block content %}
 <div class="features">
-    <h1 style="text-align: center">Лента новостей</h1>
+    <div style="background-color:white;display: flex;position:fixed; left:0; right:0"><h1 style="float:left;margin:auto">Лента новостей</h1>
+    <form action="{% url 'search_results' %}" method="get" style="margin:auto; padding-top:3px">
+      <input name="q" type="text" placeholder="Поиск...">
+    </form></div>
+    <div style="clear:both; padding-top:63px"></div>
         {% if feed_entries %}
             {% for el in feed_entries %}
             <div class="MagazineLayout">
@@ -17,7 +21,7 @@
                 </div>
                 <div class="Entry">
                 <h3><a href="{{el.id}}" target="_blank">{{el.title}}</a></h3>
-                <p><img width="16" src="{{el.icon}}"> {{el.domain}}</p>
+                <p><img width="16" src="{{el.icon}}"> <a href="https://{{el.domain}}" target="_blank">{{el.domain}}</a></p>
                 <p>{{el.published}}</p>
 
                 <p>{{ el.description }}</p>

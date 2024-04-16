@@ -41,7 +41,15 @@ def delete(request, pk):
     return redirect('settings')
 
 
-def index(request):
+def search(request):
+    feed_entries = return_feed_entries()
+    query = request.GET.get('q')
+    matches = filter(lambda el: el['description'].find(query) != -1 or el['title'].find(query) !=-1, feed_entries)
+    data = {"feed_entries": matches}
+    return render(request, 'main/home.html', data)
+
+
+def return_feed_entries():
     rss = Channels.objects.order_by('-id')
     feed_entries = []
     for rss_entry in rss:
@@ -49,14 +57,18 @@ def index(request):
         feed = feedparser.parse(rss_url)
         domain = re.findall('//(.*?)/', rss_url)[0]
         for entry in feed.entries:
-            img = BeautifulSoup(entry.summary, 'html.parser').img
-            if img:
-                img['style'] = "margin:auto; display:block"
-                img['width'] = "230"
+            if "summary" in entry:
+                summary = BeautifulSoup(entry.summary, 'html.parser').get_text().replace("Читать далее", "").replace(
+                    "Читать дальше", "")[0:250] + "..."
+                img = BeautifulSoup(entry.summary, 'html.parser').img
+                if img:
+                    img['style'] = "margin:auto; display:block"
+                    img['width'] = "230"
+                else:
+                    img = ""
             else:
                 img = ""
-            summary = BeautifulSoup(entry.summary, 'html.parser').get_text().replace("Читать далее", "").replace(
-                "Читать дальше", "")[0:250] + "..."
+                summary = ""
             el = {'icon': 'https://icons.feedercdn.com/' + domain,
                   'id': entry.id,
                   'domain': domain,
@@ -68,6 +80,10 @@ def index(request):
             if el not in feed_entries:
                 feed_entries.append(el)
 
-    feed_entries = sort_by_date(feed_entries)
+    return sort_by_date(feed_entries)
+
+
+def index(request):
+    feed_entries = return_feed_entries()
     data = {"feed_entries": feed_entries}
     return render(request, 'main/home.html', data)
