@@ -12,19 +12,46 @@ def sort_by_date(objects):
     return sorted_objects
 
 
-def settings(request):
+def rss_list(e=None):
     rss = Channels.objects.order_by('-id')
     rss_entries = []
     for entry in rss:
         feed = feedparser.parse(entry.rss_url)
+        if "subtitle" in feed.feed:
+            description = feed.feed.subtitle
+        else:
+            description = ""
         domain = re.findall('//(.*?)/', entry.rss_url)[0]
+        if e:
+            active = str(entry.id) in e
+        else:
+            active = True
         el = {'icon': 'https://icons.feedercdn.com/' + domain,
               'id': entry.id,
+              'active': active,
               'site': domain,
               'title': feed.feed.title,
               'rss_url': entry.rss_url,
-              'description': feed.feed.subtitle}
+              'description': description}
+        print(el)
         rss_entries.append(el)
+    return rss_entries
+
+
+def search(request):
+    e = request.GET.getlist('e')
+    feed_entries = return_feed_entries(e)
+    rss_entries = rss_list(e)
+    q = request.GET.get('q')
+    matches = filter(lambda el: el['description'].find(q) != -1 or el['title'].find(q) != -1, feed_entries)
+
+    data = {"feed_entries": matches,
+            "rss_list": rss_entries}
+    return render(request, 'main/home.html', data)
+
+
+def settings(request):
+    rss_entries = rss_list()
     return render(request, 'main/rss_list.html', {"rss": rss_entries})
 
 
@@ -41,22 +68,20 @@ def delete(request, pk):
     return redirect('settings')
 
 
-def search(request):
-    feed_entries = return_feed_entries()
-    query = request.GET.get('q')
-    matches = filter(lambda el: el['description'].find(query) != -1 or el['title'].find(query) !=-1, feed_entries)
-    data = {"feed_entries": matches}
-    return render(request, 'main/home.html', data)
-
-
-def return_feed_entries():
-    rss = Channels.objects.order_by('-id')
+def return_feed_entries(q=None):
+    rss = list(Channels.objects.all())
+    if q:
+        rss = list(filter(lambda el: str(el.id) in q, rss))
     feed_entries = []
     for rss_entry in rss:
         rss_url = rss_entry.rss_url
         feed = feedparser.parse(rss_url)
         domain = re.findall('//(.*?)/', rss_url)[0]
         for entry in feed.entries:
+            if "link" in entry:
+                link = entry.link
+            else:
+                link = entry.id
             if "summary" in entry:
                 summary = BeautifulSoup(entry.summary, 'html.parser').get_text().replace("Читать далее", "").replace(
                     "Читать дальше", "")[0:250] + "..."
@@ -70,7 +95,8 @@ def return_feed_entries():
                 img = ""
                 summary = ""
             el = {'icon': 'https://icons.feedercdn.com/' + domain,
-                  'id': entry.id,
+                  'id': link,
+                  'rss_id': str(rss_entry.id),
                   'domain': domain,
                   'title': entry.title,
                   'img': str(img),
@@ -85,5 +111,7 @@ def return_feed_entries():
 
 def index(request):
     feed_entries = return_feed_entries()
-    data = {"feed_entries": feed_entries}
+    rss_entries = rss_list()
+    data = {"feed_entries": feed_entries,
+            "rss_list": rss_entries}
     return render(request, 'main/home.html', data)

@@ -1,26 +1,44 @@
 {% load static %}
 <!doctype html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>{% block title %}{%endblock%}</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" />
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script type="text/javascript"
+        src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/1.1.2/css/bootstrap-multiselect.css" />
+    <script type="text/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/1.1.2/js/bootstrap-multiselect.js"></script>
+
     <link rel="stylesheet" href="{% static 'main/css/main.css' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
+
 <body>
-<div class="sidebar">
-    <a href="/" class="{% if request.resolver_match.url_name == 'home' or request.resolver_match.url_name == 'search_results' %}active{% endif %}"><i class="fa fa-home"></i> </a>
-    <a href="/settings" class="{% if request.resolver_match.url_name == 'settings' %}active{% endif %}"><i class="fa fa-newspaper-o"></i> </a>
-    <a href="/create" class="{% if request.resolver_match.url_name == 'create' %}active{% endif %}"><i class="fa fa-plus-circle"></i> </a>
-<!--    <a href="#"><i class="fa fa-envelope"></i> </a>-->
-</div>
-<div style="margin-left:64px">
-    <div class="container">
-{% block content %}{%endblock%}
-</div></div>
+    <div class="sidebar">
+        <a href="/"
+            class="{% if request.resolver_match.url_name == 'home' or request.resolver_match.url_name == 'search_results' %}active{% endif %}"><i
+                class="fa fa-home"></i> </a>
+        <a href="/settings" class="{% if request.resolver_match.url_name == 'settings' %}active{% endif %}"><i
+                class="fa fa-newspaper-o"></i> </a>
+        <a href="/create" class="{% if request.resolver_match.url_name == 'create' %}active{% endif %}"><i
+                class="fa fa-plus-circle"></i> </a>
+        <!--    <a href="#"><i class="fa fa-envelope"></i> </a>-->
+    </div>
+    <div style="margin-left:64px">
+        <div class="container">
+            {% block content %}{%endblock%}
+        </div>
+    </div>
 </body>
+
 </html>
