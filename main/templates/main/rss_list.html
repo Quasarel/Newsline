@@ -7,15 +7,15 @@
     <h1 style="text-align: center">Список активных источников</h1>
     {% if rss %}
             {% for el in rss %}
-            <div class="MagazineLayout" style="margin: 10px 20%">
-                <div style="float:left; margin: 0px 20px">
+            <div class="MagazineLayout row g-3 align-items-center" style="margin: 10px 20%">
+                <div class="col-md-2" style="text-align:center">
                     <img width="54" src="{{el.icon}}">
                 </div>
-                <div style="float:left"> <h3 style="margin: 0px 0px"><a href="https://{{el.site}}" target="_blank">{{el.title}}</a></h3>
+                <div class="col-md-8"> <h3 style="margin: 0px 0px"><a href="https://{{el.site}}" target="_blank">{{el.title}}</a></h3>
                     <p style="margin: 0px 0px">{{el.description}}</p>
                     <p style="margin: 0px 0px">{{el.rss_url}}</p>
                 </div>
-                <div>
+                <div class="col-md-2">
                     <p style="text-align: right"><a href="{% url 'rss-delete' el.id %}" class="btn btn-danger">Удалить</a></p>
                 </div>
                 </div>

@@ -6,5 +6,6 @@ urlpatterns = [
     path('settings', views.settings, name="settings"),
     path('create', views.RSSFormView.as_view(), name="create"),
     path('<int:pk>/delete', views.delete, name="rss-delete"),
-    path('search/', views.search, name='search_results')
+    path('search/', views.search, name='search_results'),
+    path('feeds/', views.feeds, name='feeds')
 ]

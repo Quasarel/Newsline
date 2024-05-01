@@ -27,7 +27,6 @@
         <form action="{% url 'search_results' %}" method="get" style="margin:10px 20px 0px" class="row g-3">
             <input name="q" type="text" placeholder="Поиск..." class="form-control" style="display:inline-block; width:200px;">
             {% if rss_list %}
-            {% csrf_token %}
             <select name="e" id="example-getting-started" required multiple="multiple">
                 {% for el in rss_list %}
                 <option value={{el.id}}>{{el.title}}</option>
@@ -49,7 +48,9 @@
             {% endif %}&nbsp;
         </div>
         <div class="Entry">
+            {% autoescape off %}
             <h3><a href="{{el.id}}" target="_blank">{{el.title}}</a></h3>
+            {% endautoescape %}
             <p><img width="16" src="{{el.icon}}"> <a href="https://{{el.domain}}" target="_blank">{{el.domain}}</a></p>
             <p>{{el.published}}</p>
 

@@ -1,3 +1,6 @@
+import json
+
+from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 import feedparser
 import re
@@ -33,9 +36,15 @@ def rss_list(e=None):
               'title': feed.feed.title,
               'rss_url': entry.rss_url,
               'description': description}
-        print(el)
         rss_entries.append(el)
     return rss_entries
+
+
+def feeds(request):
+    feed_entries = return_feed_entries()
+
+    data = {"feeds": feed_entries}
+    return HttpResponse(json.dumps(data), content_type='application/json')
 
 
 def search(request):
