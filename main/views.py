@@ -8,6 +8,7 @@ from bs4 import BeautifulSoup
 from .models import Channels
 from .forms import RSSForm
 from django.views.generic.edit import CreateView
+from django.core.paginator import Paginator, Page
 
 
 def sort_by_date(objects):
@@ -51,11 +52,19 @@ def search(request):
     e = request.GET.getlist('e')
     feed_entries = return_feed_entries(e)
     rss_entries = rss_list(e)
+    query_e = "&".join(list(map(lambda x: "e=" + x, e)))
     q = request.GET.get('q')
-    matches = filter(lambda el: el['description'].find(q) != -1 or el['title'].find(q) != -1, feed_entries)
-
-    data = {"feed_entries": matches,
-            "rss_list": rss_entries}
+    if q:
+        matches = filter(lambda el: el['description'].find(q) != -1 or el['title'].find(q) != -1, feed_entries)
+    else:
+        matches = feed_entries
+    paginator = Paginator(list(matches), 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    data = {"feed_entries": page_obj,
+            "rss_list": rss_entries,
+            "search_params": {"e":query_e,
+                              "q":q}}
     return render(request, 'main/home.html', data)
 
 
@@ -121,6 +130,13 @@ def return_feed_entries(q=None):
 def index(request):
     feed_entries = return_feed_entries()
     rss_entries = rss_list()
-    data = {"feed_entries": feed_entries,
-            "rss_list": rss_entries}
+
+    paginator = Paginator(feed_entries, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    data = {
+        "feed_entries": page_obj,
+        "rss_list": rss_entries
+    }
     return render(request, 'main/home.html', data)

@@ -21,6 +21,78 @@
     });
 </script>
 
+<nav aria-label="..." class="navbar fixed-bottom navbar-expand-sm navbar-dark bg-white" style="border-top:#F2F2F2 1px solid;">
+  <ul class="pagination" style="margin:auto">
+    {% if feed_entries.has_previous %}
+    <li class="page-item">
+        {% if search_params %}
+        <a class="page-link" href="?q={{ search_params.q }}&{{ search_params.e }}&page={{ feed_entries.previous_page_number }}">Предыдущая страница</a>
+        {% else %}
+      <a class="page-link" href="?page={{ feed_entries.previous_page_number }}">Предыдущая страница</a>
+        {% endif %}
+    </li>
+    {% endif %}
+
+    {% for page_num in feed_entries.paginator.page_range %}
+      {% if page_num == 1 %}
+        <li class="page-item {% if feed_entries.number == 1 %}active{% endif %}">
+          {% if search_params %}
+            <a class="page-link" href="?q={{ search_params.q }}&{{ search_params.e }}&page={{ page_num }}">{{ page_num }}</a>
+          {% else %}
+            <a class="page-link" href="?page={{ page_num }}">{{ page_num }}</a>
+          {% endif %}
+        </li>
+        {% if feed_entries.number >= 5 %}
+          <li class="page-item disabled">
+            <span class="page-link">...</span>
+          </li>
+        {% endif %}
+      {% elif page_num == feed_entries.paginator.num_pages %}
+        {% if feed_entries.number <= feed_entries.paginator.num_pages|add:'-4' %}
+          <li class="page-item disabled">
+            <span class="page-link">...</span>
+          </li>
+        {% endif %}
+        <li class="page-item {% if feed_entries.number == feed_entries.paginator.num_pages %}active{% endif %}">
+          {% if search_params %}
+            <a class="page-link" href="?q={{ search_params.q }}&{{ search_params.e }}&page={{ page_num }}">{{ page_num }}</a>
+            {% else %}
+            <a class="page-link" href="?page={{ page_num }}">{{ page_num }}</a>
+            {% endif %}
+        </li>
+      {% elif page_num == feed_entries.number %}
+        <li class="page-item active">
+          <span class="page-link">{{ page_num }}</span>
+        </li>
+      {% elif page_num == feed_entries.number|add:'-1' or page_num == feed_entries.number|add:'-2' or page_num == feed_entries.number|add:'1' or page_num == feed_entries.number|add:'2' %}
+        <li class="page-item">
+            {% if search_params %}
+            <a class="page-link" href="?q={{ search_params.q }}&{{ search_params.e }}&page={{ page_num }}">{{ page_num }}</a>
+            {% else %}
+          <a class="page-link" href="?page={{ page_num }}">{{ page_num }}</a>
+            {% endif %}
+        </li>
+      {% elif page_num > feed_entries.number|add:'2' and page_num < feed_entries.number|add:'-2' %}
+        {% if page_num|add:'-1' != feed_page.number %}
+        <li class="page-item disabled">
+          <span class="page-link">...</span>
+        </li>
+        {% endif %}
+      {% endif %}
+    {% endfor %}
+
+    {% if feed_entries.has_next %}
+    <li class="page-item">
+        {% if search_params %}
+        <a class="page-link" href="?q={{ search_params.q }}&{{ search_params.e }}&page={{ feed_entries.next_page_number }}">Следующая страница</a>
+        {% else %}
+      <a class="page-link" href="?page={{ feed_entries.next_page_number }}">Следующая страница</a>
+        {% endif %}
+    </li>
+    {% endif %}
+  </ul>
+</nav>
+
 <div class="features">
     <div style="background-color:white; border-bottom:#F2F2F2 1px solid; padding-bottom:10px; display:flex; position:fixed; left:0; right:0">
         <h1 style="float:left;margin:auto">Лента новостей</h1>
