@@ -1,4 +1,7 @@
 import json
+import time
+from datetime import datetime, timezone
+
 
 from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
@@ -53,9 +56,9 @@ def search(request):
     feed_entries = return_feed_entries(e)
     rss_entries = rss_list(e)
     query_e = "&".join(list(map(lambda x: "e=" + x, e)))
-    q = request.GET.get('q')
+    q = request.GET.get('q').lower()
     if q:
-        matches = filter(lambda el: el['description'].find(q) != -1 or el['title'].find(q) != -1, feed_entries)
+        matches = filter(lambda el: el['description'].lower().find(q) != -1 or el['title'].lower().find(q) != -1, feed_entries)
     else:
         matches = feed_entries
     paginator = Paginator(list(matches), 10)
@@ -112,6 +115,7 @@ def return_feed_entries(q=None):
             else:
                 img = ""
                 summary = ""
+            datetime_obj = datetime.fromtimestamp(time.mktime(entry.published_parsed), tz=timezone.utc)
             el = {'icon': 'https://icons.feedercdn.com/' + domain,
                   'id': link,
                   'rss_id': str(rss_entry.id),
@@ -120,7 +124,7 @@ def return_feed_entries(q=None):
                   'img': str(img),
                   'description': summary,
                   'published_parsed': entry.published_parsed,
-                  'published': entry.published}
+                  'published': datetime_obj}
             if el not in feed_entries:
                 feed_entries.append(el)
 
